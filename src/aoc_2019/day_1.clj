@@ -4,12 +4,10 @@
 
 (defn fuel-for-mass
   [mass]
-  (let [fuel (-> mass
-                 (quot 3)
-                 (- 2))]
-    (if (< fuel 0)
-      0
-      fuel)))
+  (-> mass
+      (quot 3)
+      (- 2)
+      (Math/max 0)))
 
 (defn fuel-for-module
   [module-mass]
