@@ -1,12 +1,10 @@
 (ns aoc-2019.day-1
-  (:require [clojure.java.io :as io]
-            [clojure.math.numeric-tower :as math]))
+  (:require [clojure.java.io :as io]))
 
 (defn fuel-for-mass
   [mass]
   (let [fuel (-> mass
-                 (/ 3)
-                 (math/floor)
+                 (quot 3)
                  (- 2))]
     (if (< fuel 0)
       0
