@@ -1,5 +1,6 @@
 (ns aoc-2019.day-1
-  (:require [clojure.java.io :as io]))
+  (:require [aoc-2019.utils :as utils]
+            [clojure.java.io :as io]))
 
 (defn fuel-for-mass
   [mass]
@@ -18,24 +19,16 @@
       total-fuel
       (recur (+ total-fuel fuel) (fuel-for-mass fuel)))))
 
-(defn read-file
-  [input]
-  (with-open [rdr (io/reader input)]
-    (doall (line-seq rdr))))
-
 (defn part-1 [path]
-  (let [input (read-file path)]
-    (->> input
-         (map read-string)
-         (map fuel-for-mass)
-         (reduce +))))
+  (->> (utils/read-file path)
+       (map fuel-for-mass)
+       (reduce +)))
 
 (defn part-2 [path]
-  (let [input (read-file path)]
-    (->> input
-         (map read-string)
-         (map fuel-for-module)
-         (reduce +))))
+  (->> (utils/read-file path)
+       (map read-string)
+       (map fuel-for-module)
+       (reduce +)))
 
 (part-1 (io/resource "day-1-input.txt"))
 (part-2 (io/resource "day-1-input.txt"))
