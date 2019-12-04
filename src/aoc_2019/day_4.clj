@@ -36,5 +36,5 @@
                                 (and (= lst (sort lst)) (valid-matching-digits? lst)))) (range start end)))))
 
 (comment
-  (part1 start end)
-  (part2 start end))
+  (part1 start (inc end))
+  (part2 start (inc end)))
