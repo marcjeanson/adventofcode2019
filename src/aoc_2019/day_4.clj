@@ -1,8 +1,5 @@
 (ns aoc-2019.day-4)
 
-(def start 240920)
-(def end 789857)
-
 (defn adjacent-matching-digits?
   [lst]
   (->> (partition-by identity lst)
@@ -32,5 +29,7 @@
               (filter true?))))
 
 (comment
+  (def start 240920)
+  (def end 789857)
   (part1 start (inc end))
   (part2 start (inc end)))
