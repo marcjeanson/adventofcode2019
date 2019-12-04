@@ -44,8 +44,6 @@
                                               (assoc 2 (last pair))
                                               (intcode))))) pairs))))
 
-;; part 1:
-(restore-gravity-assist)
-
-;; part 2:
-(find-noun-and-verb 19690720)
+(comment
+  (restore-gravity-assist)
+  (find-noun-and-verb 19690720))

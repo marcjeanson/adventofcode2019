@@ -59,8 +59,6 @@
         wire2 (process-input (last input))]
     (crossed-wires wire1 wire2)))
 
-(part1)
-
 (defn part2
   []
   (let [input (read-file (io/resource input-filename))
@@ -75,4 +73,6 @@
     (apply min (map (fn [x]
                       (+ (.indexOf wire1-path x) (.indexOf wire2-path x))) intersections))))
 
-(part2)
+(comment
+  (part1)
+  (part2))

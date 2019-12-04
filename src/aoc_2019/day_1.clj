@@ -28,5 +28,6 @@
        (map fuel-for-module)
        (reduce +)))
 
-(part-1 (io/resource "day-1-input.txt"))
-(part-2 (io/resource "day-1-input.txt"))
+(comment
+  (part-1 (io/resource "day-1-input.txt"))
+  (part-2 (io/resource "day-1-input.txt")))

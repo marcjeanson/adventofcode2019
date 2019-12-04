@@ -23,8 +23,6 @@
                               (let [lst (int-to-list x)]
                                 (and (= lst (sort lst)) (adjacent-matching-digits? lst)))) (range start end)))))
 
-(part1 start end)
-
 (defn valid-matching-digits?
   [lst]
   (->> (partition-by identity lst)
@@ -37,4 +35,6 @@
                               (let [lst (int-to-list x)]
                                 (and (= lst (sort lst)) (valid-matching-digits? lst)))) (range start end)))))
 
-(part2 start end)
+(comment
+  (part1 start end)
+  (part2 start end))
