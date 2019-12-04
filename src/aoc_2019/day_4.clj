@@ -11,9 +11,11 @@
 
 (defn part1
   [start end]
-  (count (filter true? (map (fn [x]
-                              (let [lst (map str (str x))]
-                                (and (= lst (sort lst)) (adjacent-matching-digits? lst)))) (range start end)))))
+  (count (->> (range start end)
+              (map (fn [x]
+                     (let [lst (map str (str x))]
+                       (and (= lst (sort lst)) (adjacent-matching-digits? lst)))))
+              (filter true?))))
 
 (defn valid-matching-digits?
   [lst]
@@ -23,9 +25,11 @@
 
 (defn part2
   [start end]
-  (count (filter true? (map (fn [x]
-                              (let [lst (map str (str x))]
-                                (and (= lst (sort lst)) (valid-matching-digits? lst)))) (range start end)))))
+  (count (->> (range start end)
+              (map (fn [x]
+                     (let [lst (map str (str x))]
+                       (and (= lst (sort lst)) (valid-matching-digits? lst)))))
+              (filter true?))))
 
 (comment
   (part1 start (inc end))
