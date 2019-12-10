@@ -17,10 +17,15 @@
                (+ (* 10 (get v 1)) (get v 0)))}))
 
 (defn process-instruction
-  [{:keys [input ip mem] :as state}]
-  (let [mget (fn [addr] (get mem addr))
+  [{:keys [input ip mem rbase] :as state}]
+  (let [mget (fn [addr] (get mem addr 0))
         mget-rel (fn [rel-addr] (mget (+ ip rel-addr)))
-        mset (fn [state addr value] (assoc state :mem (assoc mem addr value)))
+        mset (fn [state addr value]
+               (let [mem-size (count (:mem state))
+                     memory (if (> addr mem-size)
+                              ((comp vec flatten conj) (:mem state) (repeat (- addr mem-size) 0))
+                              (:mem state))]
+                 (assoc state :mem (assoc memory addr value))))
         move-ip (fn [state rel-addr] (assoc state :ip (+ ip rel-addr)))
         inst (parse-instruction (mget ip))
         mode-1 (get-in inst [:modes 0] 0)
@@ -29,19 +34,24 @@
         mget-param (fn [mode rel-addr]
                      (case mode
                        0 (mget (mget-rel rel-addr))
-                       1 (mget-rel rel-addr)))
+                       1 (mget-rel rel-addr)
+                       2 (mget (+ rbase (mget-rel rel-addr)))))
         param-1 (fn [] (mget-param mode-1 1))
         param-2 (fn [] (mget-param mode-2 2))
-        param-3 (fn [] (mget-param mode-3 3))]
+        param-3 (fn [] (mget-param mode-3 3))
+        target (fn [mode rel-addr]
+                 (case mode
+                   0 (mget-rel rel-addr)
+                   2 (+ rbase (mget-rel rel-addr))))]
     (case (:opcode inst)
       1 (-> state
-            (mset (mget-rel 3) (+ (param-1) (param-2)))
+            (mset (target mode-3 3) (+ (param-1) (param-2)))
             (move-ip 4))
       2 (-> state
-            (mset (mget-rel 3) (* (param-1) (param-2)))
+            (mset (target mode-3 3) (* (param-1) (param-2)))
             (move-ip 4))
       3 (-> state
-            (mset (mget-rel 1) (peek input))
+            (mset (target mode-1 1) (peek input))
             (assoc :input (pop input))
             (move-ip 2))
       4 (-> state
@@ -54,18 +64,23 @@
           (assoc state :ip (param-2))
           (move-ip state 3))
       7 (-> state
-            (mset (mget-rel 3) (if (< (param-1) (param-2)) 1 0))
+            (mset (target mode-3 3) (if (< (param-1) (param-2)) 1 0))
             (move-ip 4))
       8 (-> state
-            (mset (mget-rel 3) (if (= (param-1) (param-2)) 1 0))
+            (mset (target mode-3 3) (if (= (param-1) (param-2)) 1 0))
             (move-ip 4))
-      99 (assoc state :status :halted))))
+      9 (-> state
+            (update :rbase + (param-1))
+            (move-ip 2))
+      99 (-> state
+             (assoc :status :halted)))))
 
 (defn intcode
   [memory input]
   (let [initial-state {:input input
                        :output []
                        :mem memory
+                       :rbase 0
                        :ip 0
                        :status :running}]
     (->> (iterate process-instruction initial-state)
