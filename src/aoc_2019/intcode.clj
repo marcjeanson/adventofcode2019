@@ -76,13 +76,6 @@
              (assoc :status :halted)))))
 
 (defn intcode
-  [memory input]
-  (let [initial-state {:input input
-                       :output []
-                       :mem memory
-                       :rbase 0
-                       :ip 0
-                       :status :running}]
-    (->> (iterate process-instruction initial-state)
-         (take-while #(not= (:status %) :halted))
-         last)))
+  [state]
+  (->> (iterate process-instruction state)
+       (some #(and (or (seq (:output %)) (= (:status %) :halted)) %))))
